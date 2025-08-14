@@ -1,0 +1,32 @@
+; Import section
+
+stdwin     ; Includes windows externals and pre build assembly functions
+stdstr     ; for str functions
+
+------------------------------------------------------  ; Declare section end (at least 3 dashes)
+
+; Prototyped functions
+
+strlen (*) -> int   ; char*, ret int
+print (*, *, int)   ; handle ptr, char*, int, ret null
+get_handle() -> *   ; ret handle ptr
+
+------------------------------------------------------  ; Declare section end (at least 3 dashes)
+
+; Global var section
+
+&cnst * msg = 'Hello World!', 0x0A                      ; char*
+
+------------------------------------------------------  ; Declare section end (at least 3 dashes)
+
+; Code section
+
+int main {
+    %msg = $msg                     ; $ for global
+    %len = call strlen %msg
+    %handle = call get_handle
+
+    call print %handle %msg %len
+
+    ret 0                          ; Return 0, the _start function which calls main will automatically return 0 as the exit code
+}
