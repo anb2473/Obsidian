@@ -7,24 +7,24 @@ stdstr     ; for str functions
 
 ; Prototyped functions
 
-strlen (*) -> int   ; char*, ret int
-print (*, *, int)   ; handle ptr, char*, int, ret null
-get_handle() -> *   ; ret handle ptr
+strlen (.ptr) -> .int             ; char*, ret int
+print (.ptr, .ptr, .int) -> int   ; handle ptr, char*, int, ret int by default
+get_handle() -> hndl              ; ret window handle ptr
 
 ------------------------------------------------------  ; Declare section end (at least 3 dashes)
 
 ; Global var section
 
-&cnst * msg = 'Hello World!', 0x0A                      ; char*
+&cnst .ptr msg = 'Hello World!', 0x0A                      ; char*
 
 ------------------------------------------------------  ; Declare section end (at least 3 dashes)
 
 ; Code section
 
 int main {
-    %msg = $msg                     ; $ for global
-    %len = call strlen %msg
-    %handle = call get_handle
+    %msg = .ptr $msg                     ; $ for global
+    %len = .int call strlen %msg
+    %handle = .hndl call get_handle
 
     call print %handle %msg %len
 

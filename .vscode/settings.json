@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "symbol.h": "c",
+        "limits.h": "c",
+        "prototype-functions-icd.h": "c",
+        "prototype-symbol-icd": "c",
+        "prototype-symbol.h": "c",
+        "char-ptr-icd.h": "c"
+    }
+}

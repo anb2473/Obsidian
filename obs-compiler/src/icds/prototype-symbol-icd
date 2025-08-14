@@ -1,0 +1,49 @@
+#include "../../include/icds/prototype-symbol-icd.h"
+#include <stdlib.h>
+#include <string.h>
+
+// Initialize a Symbol
+void symbol_init(void *elt) {
+    Symbol *s = (Symbol*)elt;
+    s->kind = SYMBOL_TYPE; // default kind
+    s->value.type = BYTE;  // default type
+}
+
+// Copy a Symbol
+void symbol_copy(void *dst, const void *src) {
+    const Symbol *s_src = (const Symbol*)src;
+    Symbol *s_dst = (Symbol*)dst;
+    s_dst->kind = s_src->kind;
+
+    switch (s_src->kind) {
+        case SYMBOL_TYPE:
+            s_dst->value.type = s_src->value.type;
+            break;
+        case SYMBOL_NAME:
+            if (s_src->value.name) {
+                s_dst->value.name = strdup(s_src->value.name);
+            } else {
+                s_dst->value.name = NULL;
+            }
+            break;
+        case SYMBOL_TOKEN:
+            s_dst->value.token = s_src->value.token;
+            break;
+    }
+}
+
+// Destroy a Symbol
+void symbol_dtor(void *elt) {
+    Symbol *s = (Symbol*)elt;
+    if (s->kind == SYMBOL_NAME && s->value.name) {
+        free((void*)s->value.name);  // free strdup’ed string
+    }
+}
+
+// UT_icd for Symbol
+UT_icd symbol_icd = {
+    sizeof(Symbol),
+    symbol_init,
+    symbol_copy,
+    symbol_dtor
+};

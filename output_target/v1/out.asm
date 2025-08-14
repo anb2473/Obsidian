@@ -30,6 +30,7 @@ print:
     call WriteConsoleA
     add rsp, 8
     add rsp, 32
+    xor rax, rax        ; Set rax to 0
     ret
 
 str_len:
