@@ -1,0 +1,1 @@
+Obsidian is an IR which compiles down to assembly.

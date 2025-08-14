@@ -1,0 +1,14 @@
+incl windows;    // Includes windows externals and pre build assembly functions
+incl stdstr;     // for str functions
+
+cnst chr ptr msg = 'Hello World!', 0x0A;
+
+int main {
+    %msg = $msg;       // $ for static
+    %len = int call strlen %msg;
+    %handle = ptr call get_handle
+
+    call print %handle %msg %len
+
+    call exit 0
+}
