@@ -9,12 +9,12 @@ extern "C" {
 #include "../utils/utarray.h"
 
 // Function declarations for UT_icd
-void symbol_init(void *elt);
-void symbol_copy(void *dst, const void *src);
-void symbol_dtor(void *elt);
+void prototype_symbol_init(void *elt);
+void prototype_copy(void *dst, const void *src);
+void prototype_dtor(void *elt);
 
 // UT_icd for Symbol
-extern UT_icd symbol_icd;
+extern UT_icd prototype_symbol_icd;
 
 #ifdef __cplusplus
 }

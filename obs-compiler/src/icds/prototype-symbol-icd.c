@@ -3,16 +3,16 @@
 #include <string.h>
 
 // Initialize a Symbol
-void symbol_init(void *elt) {
-    Symbol *s = (Symbol*)elt;
+void prototype_symbol_init(void *elt) {
+    PrototypeSymbol *s = (PrototypeSymbol*)elt;
     s->kind = SYMBOL_TYPE; // default kind
     s->value.type = BYTE;  // default type
 }
 
 // Copy a Symbol
-void symbol_copy(void *dst, const void *src) {
-    const Symbol *s_src = (const Symbol*)src;
-    Symbol *s_dst = (Symbol*)dst;
+void prototype_symbol_copy(void *dst, const void *src) {
+    const PrototypeSymbol *s_src = (const PrototypeSymbol*)src;
+    PrototypeSymbol *s_dst = (PrototypeSymbol*)dst;
     s_dst->kind = s_src->kind;
 
     switch (s_src->kind) {
@@ -33,17 +33,17 @@ void symbol_copy(void *dst, const void *src) {
 }
 
 // Destroy a Symbol
-void symbol_dtor(void *elt) {
-    Symbol *s = (Symbol*)elt;
+void prototype_symbol_dtor(void *elt) {
+    PrototypeSymbol *s = (PrototypeSymbol*)elt;
     if (s->kind == SYMBOL_NAME && s->value.name) {
         free((void*)s->value.name);  // free strdup’ed string
     }
 }
 
-// UT_icd for Symbol
-UT_icd symbol_icd = {
-    sizeof(Symbol),
-    symbol_init,
-    symbol_copy,
-    symbol_dtor
+// The actual ICD variable
+UT_icd prototype_symbol_icd = {
+    sizeof(PrototypeSymbol),
+    prototype_symbol_init,
+    prototype_symbol_copy,
+    prototype_symbol_dtor
 };

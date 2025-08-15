@@ -14,10 +14,10 @@ void prototype_functions_copy(void *dst, const void *src) {
     if (*src_ptr) {
         // Create a new UT_array and copy Symbols
         *dst_ptr = (UT_array*)malloc(sizeof(UT_array));
-        utarray_init(*dst_ptr, &symbol_icd);
-        for (Symbol *s = (Symbol*)utarray_front(*src_ptr);
+        utarray_init(*dst_ptr, &prototype_symbol_icd);
+        for (PrototypeSymbol *s = (PrototypeSymbol*)utarray_front(*src_ptr);
              s != NULL;
-             s = (Symbol*)utarray_next(*src_ptr, s)) {
+             s = (PrototypeSymbol*)utarray_next(*src_ptr, s)) {
             utarray_push_back(*dst_ptr, s);
         }
     } else {

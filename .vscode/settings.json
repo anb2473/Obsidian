@@ -5,6 +5,13 @@
         "prototype-functions-icd.h": "c",
         "prototype-symbol-icd": "c",
         "prototype-symbol.h": "c",
-        "char-ptr-icd.h": "c"
-    }
+        "char-ptr-icd.h": "c",
+        "prototype-symbol-icd.h": "c",
+        "global-var-token.h": "c",
+        "utarray.h": "c",
+        "global-vars-icd.h": "c",
+        "str-utils.h": "c",
+        "stdlib.h": "c"
+    },
+    "files.autoGuessLanguage": false
 }

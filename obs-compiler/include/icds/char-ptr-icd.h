@@ -1,21 +1,20 @@
-#ifndef CHAR_PTR_ARRAY_H
-#define CHAR_PTR_ARRAY_H
-
-#include "utarray.h"
+#ifndef CHAR_PTR_ICD_H
+#define CHAR_PTR_ICD_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-extern UT_icd char_ptr_icd;   // ICD for char*
-extern UT_array* char_array;  // the dynamic array
+#include "../utils/utarray.h"
 
-void char_array_init(void);
-void char_array_push(char* str);
-void char_array_free(void);
+void char_ptr_dtor(void *elt);
+void char_ptr_copy(void *dst, const void *src);
+void char_ptr_init(void *elt);
+
+extern UT_icd char_ptr_icd;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // CHAR_PTR_ARRAY_H
+#endif // CHAR_PTR_ICD_H

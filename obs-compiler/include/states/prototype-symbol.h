@@ -8,15 +8,15 @@ typedef enum {
     SYMBOL_TYPE,
     SYMBOL_NAME,
     SYMBOL_TOKEN
-} SymbolType;
+} PrototypeSymbolType;
 
 typedef struct {
-    SymbolType kind;  // What kind of symbol this is
+    PrototypeSymbolType kind;  // What kind of symbol this is
     union {
         Type type;       // Only valid if kind == SYMBOL_TYPE
         const char* name; // Only valid if kind == SYMBOL_NAME
-        Token token;     // Only valid if kind == SYMBOL_TOKEN
+        PrototypeToken token;     // Only valid if kind == SYMBOL_TOKEN
     } value;
-} Symbol;
+} PrototypeSymbol;
 
 #endif // SYMBOL_H

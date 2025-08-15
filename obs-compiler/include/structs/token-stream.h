@@ -10,6 +10,7 @@ extern "C" {
 typedef struct {
     UT_array* included_paths;
     UT_array* prototype_functions;
+    UT_array* global_vars;
 } TokenStream;
 
 #ifdef __cplusplus

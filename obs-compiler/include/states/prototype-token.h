@@ -6,6 +6,6 @@ typedef enum {
     TOKEN_OPEN_BRACE,  // {
     TOKEN_CLOSE_BRACE, // }
     TOKEN_RET          // return
-} Token;
+} PrototypeToken;
 
 #endif // TOKEN_H

@@ -7,15 +7,15 @@ stdstr     ; for str functions
 
 ; Prototyped functions
 
-strlen (.ptr) -> .int             ; char*, ret int
-print (.ptr, .ptr, .int) -> int   ; handle ptr, char*, int, ret int by default
-get_handle() -> hndl              ; ret window handle ptr
+strlen (.ptr) -> .int              ; char*, ret int
+print (.ptr, .ptr, .int) -> .int   ; handle ptr, char*, int, ret int by default
+get_handle() -> .hndl              ; ret window handle ptr
 
 ------------------------------------------------------  ; Declare section end (at least 3 dashes)
 
 ; Global var section
 
-&cnst .ptr msg = 'Hello World!', 0x0A                      ; char*
+&rod .ptr msg = 'Hello World!\n',                      ; char*
 
 ------------------------------------------------------  ; Declare section end (at least 3 dashes)
 
