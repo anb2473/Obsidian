@@ -19,6 +19,9 @@
 #include "../include/icds/prototype-functions-icd.h"
 #include "../include/icds/global-var-symbol-icd.h"
 #include "../include/icds/global-vars-icd.h"
+#include "../include/icds/text-symbol-icd.h"
+#include "../include/icds/fn-lines-array-icd.h"
+#include "../include/icds/fn-decl-icd.h"
 
 // Include type map
 #include "../include/consts/type-map.h"
@@ -383,6 +386,17 @@ UT_array* tokenize_global_vars (FILE* obs_file) {
     }
     str_buffer_free(current_token);
     return global_vars;
+}
+
+UT_array* tokenize_text (FILE* obs_file) {
+    UT_array* fn_array = NULL;
+    utarray_new(fn_array, &fn_decl_icd);
+
+    UT_array* fn_lines_array = NULL;
+    utarray_new(fn_lines_array, &fn_lines_array_icd);
+
+    UT_array* loc_tokens = NULL;
+    utarray_new(loc_tokens, &text_symbol_icd);
 }
 
 TokenStream lexical_analysis(const char* obs_path) {

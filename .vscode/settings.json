@@ -11,7 +11,10 @@
         "utarray.h": "c",
         "global-vars-icd.h": "c",
         "str-utils.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "global-var-symbol.h": "c",
+        "fn-lines-array.h": "c",
+        "fn-lines-array-icd.h": "c"
     },
     "files.autoGuessLanguage": false
 }
