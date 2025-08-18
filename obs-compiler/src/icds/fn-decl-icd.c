@@ -58,7 +58,7 @@ void fndecl_dtor(void *_elt) {
     }
 }
 
-UT_icd FnDecl_icd = {
+UT_icd fn_decl_icd = {
     sizeof(FnDecl),
     fndecl_init,
     fndecl_copy,

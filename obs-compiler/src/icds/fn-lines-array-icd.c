@@ -1,4 +1,4 @@
-#include "../../include/icds/fn-lines-array.h"
+#include "../../include/icds/fn-lines-array-icd.h"
 
 void textsymbol_array_array_init(void *_elt) {
     UT_array *arr;

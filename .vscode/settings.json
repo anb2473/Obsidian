@@ -14,7 +14,9 @@
         "stdlib.h": "c",
         "global-var-symbol.h": "c",
         "fn-lines-array.h": "c",
-        "fn-lines-array-icd.h": "c"
+        "fn-lines-array-icd.h": "c",
+        "text-symbol.h": "c",
+        "lexer.h": "c"
     },
     "files.autoGuessLanguage": false
 }

@@ -11,6 +11,7 @@ typedef struct {
     UT_array* included_paths;
     UT_array* prototype_functions;
     UT_array* global_vars;
+    UT_array* text_section;
 } TokenStream;
 
 #ifdef __cplusplus

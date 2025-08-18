@@ -1,7 +1,7 @@
 #ifndef FN_DECL_ICD_H
 #define FN_DECL_ICD_H
 
-#include "utarray.h"
+#include "../utils/utarray.h"
 #include "../structs/fn-decl.h"
 #include "char-ptr-icd.h"
 #include "fn-lines-array-icd.h"

@@ -1,7 +1,7 @@
 #ifndef TEXT_SYMBOL_ARRAY_ARRAY_ICD_H
 #define TEXT_SYMBOL_ARRAY_ARRAY_ICD_H
 
-#include "utarray.h"
+#include "../utils/utarray.h"
 
 // init/copy/dtor for UT_array<UT_array<TextSymbol>>
 void textsymbol_array_array_init(void *_elt);

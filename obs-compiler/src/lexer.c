@@ -397,6 +397,102 @@ UT_array* tokenize_text (FILE* obs_file) {
 
     UT_array* loc_tokens = NULL;
     utarray_new(loc_tokens, &text_symbol_icd);
+
+    bool in_comment = false;
+    
+    StringBuffer* current_token = str_buffer_new(64);
+    if (!current_token) {
+        return fn_array;
+    }
+
+    int ch;
+    while ((ch = fgetc(obs_file)) != EOF) {
+        switch (ch) {
+            case '\n':
+                in_comment = false;
+                if (utarray_len(loc_tokens) != 0) {
+                    utarray_push_back(fn_lines_array, loc_tokens);
+                }
+                break;
+            case '-':
+                if (in_comment) {
+                    continue;
+                }
+                if (check_seek(obs_file, "--")) {
+                    return fn_array;
+                }
+            case '.':   // type
+                if (in_comment) {
+                    continue;
+                }
+                Type* type = check_for_type(obs_file);
+                if (type != NULL) {
+                    TextSymbol new_symbol = {
+                        .kind = TEXT_SYMBOL_TYPE,
+                        .value = { .type = *type }
+                    };
+                    utarray_push_back(loc_tokens, &new_symbol);
+                }
+                break;
+            case '=':
+                if (in_comment) {
+                    continue;
+                }
+                TextSymbol new_symbol = {
+                    .kind = TEXT_SYMBOL_TOKEN,
+                    .value = { .token = TEXT_TOKEN_EQ }
+                };
+                utarray_push_back(loc_tokens, &new_symbol);
+                break;
+            case '$':
+                if (in_comment) {
+                    continue;
+                }
+                TextSymbol new_symbol2 = {
+                    .kind = TEXT_SYMBOL_TOKEN,
+                    .value = { .token = TEXT_TOKEN_CALL }
+                };
+                utarray_push_back(loc_tokens, &new_symbol);
+                break;
+            case '\'':
+                if (in_comment) {
+                    continue;
+                }
+                TextSymbol new_symbol3 = {
+                    .kind = TEXT_SYMBOL_TOKEN,
+                    .value = { .token = TOKEN_OPEN_STR }
+                };
+                utarray_push_back(loc_tokens, &new_symbol);
+                break;
+            case ';':
+                in_comment = true;
+                break;
+            case '*':
+                if (in_comment) {
+                    continue;
+                }
+                TextSymbol new_symbol4 = {
+                    .kind = TEXT_SYMBOL_REG,
+                    .value.reg = str_buffer_get_string(current_token),
+                };
+                utarray_push_back(loc_tokens, &new_symbol);
+                break;
+            case ' ':
+                continue;
+            default:
+                if (in_comment) {
+                    continue;
+                }
+                str_buffer_append_char(current_token, (char) ch);
+                break;
+        }
+    }
+
+    str_buffer_free(current_token);
+    free(fn_lines_array);
+    free(loc_tokens);
+
+    return fn_array;
 }
 
 TokenStream lexical_analysis(const char* obs_path) {
@@ -440,6 +536,14 @@ TokenStream lexical_analysis(const char* obs_path) {
         return result;  // Return empty struct
     }
     printf("Global variables tokenized successfully.\n");
+
+    printf("Tokenizing text section...\n");
+    result.text_section = tokenize_text(obs_file);
+    if (!result.text_section) {
+        fclose(obs_file);
+        return result;  // Return empty struct
+    }
+    printf("Text section tokenized successfully.\n");
 
     // Clean up
     fclose(obs_file);

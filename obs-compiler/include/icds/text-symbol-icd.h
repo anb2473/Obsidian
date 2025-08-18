@@ -1,7 +1,7 @@
 #ifndef TEXT_SYMBOL_ICD_H
 #define TEXT_SYMBOL_ICD_H
 
-#include "utarray.h"
+#include "../utils/utarray.h"
 #include "../states/text-symbol.h"
 
 // init/copy/dtor functions for TextSymbol
