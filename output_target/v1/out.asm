@@ -49,24 +49,24 @@ main:
 
     lea rcx, [rel msg]
 
-    add rsp, 8
-    call str_len
     sub rsp, 8
+    call str_len
+    add rsp, 8
 
     mov r8, rax           ; length
 
-    add rsp, 8
-    call get_handle
     sub rsp, 8
+    call get_handle
+    add rsp, 8
 
     mov rcx, rax          ; handle
 
     lea rdx, [rel msg]    ; string pointer
     lea r9, [rel written] ; pointer to DWORD in .bss
 
-    add rsp, 8
-    call print
     sub rsp, 8
+    call print
+    add rsp, 8
 
     xor rax, rax          ; set return value to 0
     add rsp, 32

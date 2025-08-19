@@ -8,7 +8,8 @@ typedef enum {
     TEXT_SYMBOL_TYPE,
     TEXT_SYMBOL_REG,
     TEXT_SYMBOL_TOKEN,
-    TEXT_SYMBOL_DATA
+    TEXT_SYMBOL_DATA,
+    TEXT_SYMBOL_FN
 } TextSymbolType;
 
 typedef struct {
@@ -17,7 +18,8 @@ typedef struct {
         Type type;        // Only valid if kind == TEXT_SYMBOL_TYPE
         const char* reg;  // Only valid if kind == TEXT_SYMBOL_REG
         TextToken token;  // Only valid if kind == TEXT_SYMBOL_TOKEN
-        char* data;       // Only valid if kind == TEXT_SYMBOL_DATA
+        const char* data; // Only valid if kind == TEXT_SYMBOL_DATA
+        const char* fn;   // Only valid if kind == TEXT_SYMBOL_FN
     } value;
 } TextSymbol;
 

@@ -7,26 +7,26 @@ stdstr     ; for str functions
 
 ; Prototyped functions
 
-strlen (.ptr) -> .int              ; char*, ret int
-print (.ptr, .ptr, .int) -> .int   ; handle ptr, char*, int, ret int by default
-get_handle() -> .hndl              ; ret window handle ptr
+strlen ( .ptr ) -> .wrd              ; char*, ret int
+print ( .ptr, .ptr, .wrd ) -> .wrd   ; handle ptr, char*, int, ret int by default
+get_handle( ) -> .hndl              ; ret window handle ptr
 
 ------------------------------------------------------  ; Declare section end (at least 3 dashes)
 
 ; Global var section
 
-&rod .ptr msg = 'Hello World!\n',                      ; char*
+&rod .ptr msg = 'Hello World!\n'                        ; char*
 
 ------------------------------------------------------  ; Declare section end (at least 3 dashes)
 
 ; Code section
 
-.int main {
-    msg* = .ptr msg&                     ; $ for global
-    len* = .int $strlen() msg*
+.wrd main ( ) {
+    msg* = .ptr msg&                     ; & for global
+    len* = .wrd $strlen() msg*
     handle* = .hndl $get_handle()
 
-    $print() handle* msg* len*
+    $print( handle* msg* len* )
 
-    ret 0                          ; Return 0, the _start function which calls main will automatically return 0 as the exit code
+    % 0*                         ; Return 0, the _start function which calls main will automatically return 0 as the exit code
 }

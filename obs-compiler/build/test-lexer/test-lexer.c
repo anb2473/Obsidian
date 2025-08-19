@@ -93,14 +93,14 @@ void print_global_vars(UT_array* vars) {
                         case TOKEN_OPEN_STR:
                             printf("'");
                             break;
-                        case TOKEN_CLOSE_STR:
-                            printf("'\n");
+                        case TOKEN_CONST:
+                            printf("&rod ");
                             break;
-                        case TOKEN_FN_POINTER:
-                            printf("&fn ");
+                        case TOKEN_MUTABLE:
+                            printf("&mut ");
                             break;
-                        case TOKEN_VAR_POINTER:
-                            printf("&var ");
+                        case TOKEN_BSS:
+                            printf("&bss ");
                             break;
                         default:
                             break;
@@ -137,6 +137,8 @@ void print_text_section(UT_array* text_section) {
                     case TEXT_SYMBOL_DATA:
                         printf("&%s ", r->value.data);
                         break;
+                    case TEXT_SYMBOL_FN:
+                        printf("%s", r->value.fn);
                     case TEXT_SYMBOL_TOKEN:
                         switch (r->value.token) {
                             case TEXT_TOKEN_EQ:
@@ -154,7 +156,16 @@ void print_text_section(UT_array* text_section) {
                             case TEXT_TOKEN_CLOSE_FN_PARAM:
                                 printf(")");
                                 break;
-                        }
+                            case TEXT_TOKEN_OPEN_FN:
+                                printf("{");
+                                break;
+                            case TEXT_TOKEN_CLOSE_FN:
+                                printf("}");
+                                break;
+                            case TEXT_TOKEN_RET:
+                                printf("return ");
+                                break;
+                        }   
                         break;
                 }
             }

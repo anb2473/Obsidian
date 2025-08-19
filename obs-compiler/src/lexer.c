@@ -166,12 +166,12 @@ UT_array* tokenize_prototypes (FILE* obs_file) {  // name ( param1_type, param2_
                         };
                         utarray_push_back(current_prototype_function_tokens, &new_symbol);
                     }
+                    PrototypeSymbol new_symbol = {
+                        .kind = SYMBOL_TOKEN,
+                        .value = { .token = TOKEN_OPEN_BRACE }
+                    };
+                    utarray_push_back(current_prototype_function_tokens, &new_symbol);
                 }
-                PrototypeSymbol new_symbol = {
-                    .kind = SYMBOL_TOKEN,
-                    .value = { .token = TOKEN_OPEN_BRACE }
-                };
-                utarray_push_back(current_prototype_function_tokens, &new_symbol);
                 break;
             case ')':   // close brace (end parameters)
                 if (!in_comment) {
@@ -218,17 +218,6 @@ UT_array* tokenize_prototypes (FILE* obs_file) {  // name ( param1_type, param2_
                 break;
 
             case ' ':
-                if (!in_comment && !str_buffer_is_empty(current_token)) {
-                    char* token_str = str_buffer_duplicate(current_token);
-                    if (token_str) {
-                        PrototypeSymbol new_symbol5 = {
-                            .kind = SYMBOL_NAME,
-                            .value = { .name = token_str }
-                        };
-                        utarray_push_back(current_prototype_function_tokens, &new_symbol5);
-                        str_buffer_clear(current_token);
-                    }
-                }
                 break;
             case ';':
                 in_comment = true;
@@ -315,10 +304,6 @@ UT_array* tokenize_global_vars (FILE* obs_file) {
                 str_buffer_clear(current_token);
                 break;
             case '&':
-                // Consume any whitespace after '&'
-                while ((ch = fgetc(obs_file)) != EOF && (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')) {}
-                ungetc(ch, obs_file); // Put back the non-whitespace character
-
                 GlobalVarToken* global_var = check_for_global_var(obs_file);
                 if (global_var != NULL) {
                     GlobalVarSymbol new_symbol = {
@@ -376,6 +361,8 @@ UT_array* tokenize_global_vars (FILE* obs_file) {
             case ';':
                 in_comment = true;
                 break;
+            case ' ':
+                break;
             default:
                 str_buffer_append_char(current_token, (char)ch);
                 break;
@@ -418,7 +405,6 @@ UT_array* tokenize_text (FILE* obs_file) {
 
     int ch;
     while ((ch = fgetc(obs_file)) != EOF) {
-        printf("%c", ch);
         if (in_comment) {
             if (ch == '\n') {
                 in_comment = false;
@@ -435,8 +421,6 @@ UT_array* tokenize_text (FILE* obs_file) {
             case '\n':
                 if (utarray_len(loc_tokens) > 0) {
                     utarray_push_back(fn_lines_array, &loc_tokens);
-                } else {
-                    printf("\nNo tokens in this line\n");
                 }
                 utarray_new(loc_tokens, &text_symbol_icd);
                 str_buffer_clear(current_token);
@@ -447,7 +431,6 @@ UT_array* tokenize_text (FILE* obs_file) {
                 }
                 break;
             case '.':   // type
-                printf("S");
                 Type* type = check_for_type(obs_file);
                 if (type != NULL) {
                     TextSymbol new_symbol = {
@@ -470,6 +453,7 @@ UT_array* tokenize_text (FILE* obs_file) {
                     .value = { .token = TEXT_TOKEN_CALL }
                 };
                 utarray_push_back(loc_tokens, &new_symbol3);
+                str_buffer_clear(current_token);
                 break;
             case '\'':
                 TextSymbol new_symbol4 = {
@@ -497,7 +481,7 @@ UT_array* tokenize_text (FILE* obs_file) {
                 if (token_str2) {
                     TextSymbol new_symbol6 = {
                         .kind = TEXT_SYMBOL_DATA,
-                        .value.data = token_str,
+                        .value.data = token_str2,
                     };
                     utarray_push_back(loc_tokens, &new_symbol6);
                     str_buffer_clear(current_token);
@@ -507,8 +491,8 @@ UT_array* tokenize_text (FILE* obs_file) {
                 char* token_str3 = str_buffer_duplicate(current_token);
                 if (token_str3) {
                     TextSymbol new_symbol7 = {
-                        .kind = TEXT_SYMBOL_DATA,
-                        .value.data = token_str,
+                        .kind = TEXT_SYMBOL_FN,
+                        .value.data = token_str3,
                     };
                     utarray_push_back(loc_tokens, &new_symbol7);
                     TextSymbol new_symbol8 = {
@@ -520,23 +504,36 @@ UT_array* tokenize_text (FILE* obs_file) {
                 }
                 break;
             case ')':
-                char* token_str4 = str_buffer_duplicate(current_token);
-                if (token_str4) {
-                    // TextSymbol new_symbol9 = {
-                    //     .kind = TEXT_SYMBOL_DATA,
-                    //     .value.data = token_str,
-                    // };
-                    // utarray_push_back(loc_tokens, &new_symbol9);
-                    TextSymbol new_symbol10 = {
-                        .kind = TEXT_SYMBOL_TOKEN,
-                        .value.token = TEXT_TOKEN_CLOSE_FN_PARAM,
-                    };
-                    utarray_push_back(loc_tokens, &new_symbol10);
-                    str_buffer_clear(current_token);
-                }
+                TextSymbol new_symbol10 = {
+                    .kind = TEXT_SYMBOL_TOKEN,
+                    .value.token = TEXT_TOKEN_CLOSE_FN_PARAM,
+                };
+                utarray_push_back(loc_tokens, &new_symbol10);
+                str_buffer_clear(current_token);
                 break;
             case ' ':
                 continue;
+            case '{':
+                TextSymbol new_symbol11 = {
+                    .kind = TEXT_SYMBOL_TOKEN,
+                    .value.token = TEXT_TOKEN_OPEN_FN,
+                };
+                utarray_push_back(loc_tokens, &new_symbol11);
+                break;
+            case '}':
+                TextSymbol new_symbol12 = {
+                    .kind = TEXT_SYMBOL_TOKEN,
+                    .value.token = TEXT_TOKEN_CLOSE_FN,
+                };
+                utarray_push_back(loc_tokens, &new_symbol12);
+                break;
+            case '%':
+                TextSymbol new_symbol13 = {
+                    .kind = TEXT_SYMBOL_TOKEN,
+                    .value.token = TEXT_TOKEN_RET,
+                };
+                utarray_push_back(loc_tokens, &new_symbol13);
+                break;
             default:
                 str_buffer_append_char(current_token, (char) ch);
                 break;
