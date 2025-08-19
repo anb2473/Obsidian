@@ -10,6 +10,7 @@
 #include "../../include/states/global-var-symbol.h"
 #include "../../include/states/text-symbol.h"
 #include "../../include/consts/type-map.h"
+#include "../../include/structs/fn-decl.h"
 
 void print_included_paths(UT_array* paths) {
     if (paths == NULL) {
@@ -118,10 +119,11 @@ void print_text_section(UT_array* text_section) {
     }
 
     printf("Text Section:\n");
-    UT_array** p = NULL;
-    while ((p = (UT_array**)utarray_next(text_section, p))) {
+    FnDecl* p = NULL;
+    while ((p = (FnDecl*)utarray_next(text_section, p))) {
+        UT_array* fn_lines = p->fn_lines;
         UT_array** q = NULL;
-        while ((q = (UT_array**)utarray_next(*p, q))) {
+        while ((q = (UT_array**)utarray_next(fn_lines, q))) {
             printf("  ");
             TextSymbol* r = NULL;
             while ((r = (TextSymbol*)utarray_next(*q, r))) {

@@ -7,6 +7,7 @@
 
 // Include structs
 #include "../include/structs/token-stream.h"
+#include "../include/states/type.h"
 
 // Include states
 #include "../include/states/prototype-symbol.h"
@@ -391,12 +392,22 @@ UT_array* tokenize_global_vars (FILE* obs_file) {
 UT_array* tokenize_text (FILE* obs_file) {
     UT_array* fn_array = NULL;
     utarray_new(fn_array, &fn_decl_icd);
+    if (!fn_array) return NULL;
 
     UT_array* fn_lines_array = NULL;
     utarray_new(fn_lines_array, &fn_lines_array_icd);
+    if (!fn_lines_array) {
+        utarray_free(fn_array);
+        return NULL;
+    }
 
     UT_array* loc_tokens = NULL;
     utarray_new(loc_tokens, &text_symbol_icd);
+    if (!loc_tokens) {
+        utarray_free(fn_lines_array);
+        utarray_free(fn_array);
+        return NULL;
+    }
 
     bool in_comment = false;
     
@@ -407,7 +418,7 @@ UT_array* tokenize_text (FILE* obs_file) {
 
     int ch;
     while ((ch = fgetc(obs_file)) != EOF) {
-        printf("%c", (char*)ch);
+        printf("%c", ch);
         if (in_comment) {
             if (ch == '\n') {
                 in_comment = false;
@@ -417,10 +428,13 @@ UT_array* tokenize_text (FILE* obs_file) {
 
         switch (ch) {
             case '\n':
-                printf("%d", utarray_len(loc_tokens));
-                if (utarray_len(loc_tokens) != 0) {
-                    utarray_push_back(fn_lines_array, loc_tokens);
+                if (utarray_len(loc_tokens) > 0) {
+                    utarray_push_back(fn_lines_array, &loc_tokens);
+                } else {
+                    printf("\nNo tokens in this line\n");
                 }
+                utarray_new(loc_tokens, &text_symbol_icd);
+                str_buffer_clear(current_token);
                 break;
             case '-':
                 if (check_seek(obs_file, "--")) {
@@ -480,14 +494,31 @@ UT_array* tokenize_text (FILE* obs_file) {
         }
     }
 
-    if (utarray_len(loc_tokens) > 0) {
-        utarray_push_back(fn_lines_array, &loc_tokens);
+    // Add any remaining tokens
+    if (loc_tokens) {
+        if (utarray_len(loc_tokens) > 0) {
+            utarray_push_back(fn_lines_array, &loc_tokens);
+        } else {
+            utarray_free(loc_tokens);
+        }
     }
 
-    utarray_push_back(fn_array, &fn_lines_array);
+    FnDecl fn_decl;
+    fn_decl.name = "main";
+    fn_decl.args = NULL;
+    fn_decl.type = LNG;
+    fn_decl.fn_lines = fn_lines_array;
+
+    utarray_push_back(fn_array, &fn_decl);
 
     str_buffer_free(current_token);
-    free(loc_tokens);
+
+    // Clean up if no tokens were added
+    if (utarray_len(fn_lines_array) == 0) {
+        utarray_free(fn_lines_array);
+        utarray_free(fn_array);
+        return NULL;
+    }
 
     return fn_array;
 }

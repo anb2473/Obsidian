@@ -23,7 +23,10 @@ gcc -Wall -Wextra -std=c99 -I../include -c ../src/icds/char-ptr-icd.c -o obj/icd
 gcc -Wall -Wextra -std=c99 -I../include -c ../src/icds/prototype-symbol-icd.c -o obj/icds/prototype-symbol-icd.o
 gcc -Wall -Wextra -std=c99 -I../include -c ../src/icds/prototype-functions-icd.c -o obj/icds/prototype-functions-icd.o
 gcc -Wall -Wextra -std=c99 -I../include -c ../src/icds/global-var-symbol-icd.c -o obj/icds/global-var-symbol-icd.o
-gcc -Wall -Wextra -std=c99 -I../include -c ../src/icds/global-vars-icd.c -o obj/icds/global-vars-icd.o
+gcc -c ../src/icds/global-vars-icd.c -o ../obj/icds/global-vars-icd.o -I../include
+gcc -c ../src/icds/text-symbol-icd.c -o ../obj/icds/text-symbol-icd.o -I../include
+gcc -c ../src/icds/fn-lines-array-icd.c -o ../obj/icds/fn-lines-array-icd.o -I../include
+gcc -c ../src/icds/fn-decl-icd.c -o ../obj/icds/fn-decl-icd.o -I../include
 
 REM Link everything together
 echo Linking...
