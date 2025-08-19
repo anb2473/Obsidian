@@ -134,6 +134,9 @@ void print_text_section(UT_array* text_section) {
                     case TEXT_SYMBOL_TYPE:
                         printf(".%s ", type_map[r->value.type].name);
                         break;
+                    case TEXT_SYMBOL_DATA:
+                        printf("&%s ", r->value.data);
+                        break;
                     case TEXT_SYMBOL_TOKEN:
                         switch (r->value.token) {
                             case TEXT_TOKEN_EQ:
@@ -144,6 +147,12 @@ void print_text_section(UT_array* text_section) {
                                 break;
                             case TEXT_TOKEN_OPEN_STR:
                                 printf("'");
+                                break;
+                            case TEXT_TOKEN_OPEN_FN_PARAM:
+                                printf("(");
+                                break;
+                            case TEXT_TOKEN_CLOSE_FN_PARAM:
+                                printf(")");
                                 break;
                         }
                         break;

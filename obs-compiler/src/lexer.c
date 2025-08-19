@@ -422,6 +422,11 @@ UT_array* tokenize_text (FILE* obs_file) {
         if (in_comment) {
             if (ch == '\n') {
                 in_comment = false;
+                if (utarray_len(loc_tokens) > 0) {
+                    utarray_push_back(fn_lines_array, &loc_tokens);
+                }
+                utarray_new(loc_tokens, &text_symbol_icd);
+                str_buffer_clear(current_token);
             }
             continue;
         }
@@ -442,6 +447,7 @@ UT_array* tokenize_text (FILE* obs_file) {
                 }
                 break;
             case '.':   // type
+                printf("S");
                 Type* type = check_for_type(obs_file);
                 if (type != NULL) {
                     TextSymbol new_symbol = {
@@ -483,6 +489,49 @@ UT_array* tokenize_text (FILE* obs_file) {
                         .value.reg = token_str,
                     };
                     utarray_push_back(loc_tokens, &new_symbol5);
+                    str_buffer_clear(current_token);
+                }
+                break;
+            case '&':
+                char* token_str2 = str_buffer_duplicate(current_token);
+                if (token_str2) {
+                    TextSymbol new_symbol6 = {
+                        .kind = TEXT_SYMBOL_DATA,
+                        .value.data = token_str,
+                    };
+                    utarray_push_back(loc_tokens, &new_symbol6);
+                    str_buffer_clear(current_token);
+                }
+                break;
+            case '(':
+                char* token_str3 = str_buffer_duplicate(current_token);
+                if (token_str3) {
+                    TextSymbol new_symbol7 = {
+                        .kind = TEXT_SYMBOL_DATA,
+                        .value.data = token_str,
+                    };
+                    utarray_push_back(loc_tokens, &new_symbol7);
+                    TextSymbol new_symbol8 = {
+                        .kind = TEXT_SYMBOL_TOKEN,
+                        .value.token = TEXT_TOKEN_OPEN_FN_PARAM,
+                    };
+                    utarray_push_back(loc_tokens, &new_symbol8);
+                    str_buffer_clear(current_token);
+                }
+                break;
+            case ')':
+                char* token_str4 = str_buffer_duplicate(current_token);
+                if (token_str4) {
+                    // TextSymbol new_symbol9 = {
+                    //     .kind = TEXT_SYMBOL_DATA,
+                    //     .value.data = token_str,
+                    // };
+                    // utarray_push_back(loc_tokens, &new_symbol9);
+                    TextSymbol new_symbol10 = {
+                        .kind = TEXT_SYMBOL_TOKEN,
+                        .value.token = TEXT_TOKEN_CLOSE_FN_PARAM,
+                    };
+                    utarray_push_back(loc_tokens, &new_symbol10);
                     str_buffer_clear(current_token);
                 }
                 break;

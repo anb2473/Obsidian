@@ -22,11 +22,11 @@ get_handle() -> .hndl              ; ret window handle ptr
 ; Code section
 
 .int main {
-    msg* = .ptr msg*                     ; $ for global
-    len* = .int $strlen msg*
-    handle* = .hndl $get_handle
+    msg* = .ptr msg&                     ; $ for global
+    len* = .int $strlen() msg*
+    handle* = .hndl $get_handle()
 
-    $print handle* msg* len*
+    $print() handle* msg* len*
 
     ret 0                          ; Return 0, the _start function which calls main will automatically return 0 as the exit code
 }
