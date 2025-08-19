@@ -407,24 +407,27 @@ UT_array* tokenize_text (FILE* obs_file) {
 
     int ch;
     while ((ch = fgetc(obs_file)) != EOF) {
+        printf("%c", (char*)ch);
+        if (in_comment) {
+            if (ch == '\n') {
+                in_comment = false;
+            }
+            continue;
+        }
+
         switch (ch) {
             case '\n':
-                in_comment = false;
+                printf("%d", utarray_len(loc_tokens));
                 if (utarray_len(loc_tokens) != 0) {
                     utarray_push_back(fn_lines_array, loc_tokens);
                 }
                 break;
             case '-':
-                if (in_comment) {
-                    continue;
-                }
                 if (check_seek(obs_file, "--")) {
                     return fn_array;
                 }
+                break;
             case '.':   // type
-                if (in_comment) {
-                    continue;
-                }
                 Type* type = check_for_type(obs_file);
                 if (type != NULL) {
                     TextSymbol new_symbol = {
@@ -435,61 +438,55 @@ UT_array* tokenize_text (FILE* obs_file) {
                 }
                 break;
             case '=':
-                if (in_comment) {
-                    continue;
-                }
-                TextSymbol new_symbol = {
+                TextSymbol new_symbol2 = {
                     .kind = TEXT_SYMBOL_TOKEN,
                     .value = { .token = TEXT_TOKEN_EQ }
                 };
-                utarray_push_back(loc_tokens, &new_symbol);
+                utarray_push_back(loc_tokens, &new_symbol2);
                 break;
             case '$':
-                if (in_comment) {
-                    continue;
-                }
-                TextSymbol new_symbol2 = {
+                TextSymbol new_symbol3 = {
                     .kind = TEXT_SYMBOL_TOKEN,
                     .value = { .token = TEXT_TOKEN_CALL }
                 };
-                utarray_push_back(loc_tokens, &new_symbol);
+                utarray_push_back(loc_tokens, &new_symbol3);
                 break;
             case '\'':
-                if (in_comment) {
-                    continue;
-                }
-                TextSymbol new_symbol3 = {
+                TextSymbol new_symbol4 = {
                     .kind = TEXT_SYMBOL_TOKEN,
                     .value = { .token = TOKEN_OPEN_STR }
                 };
-                utarray_push_back(loc_tokens, &new_symbol);
+                utarray_push_back(loc_tokens, &new_symbol4);
                 break;
             case ';':
                 in_comment = true;
                 break;
             case '*':
-                if (in_comment) {
-                    continue;
+                char* token_str = str_buffer_duplicate(current_token);
+                if (token_str) {
+                    TextSymbol new_symbol5 = {
+                        .kind = TEXT_SYMBOL_REG,
+                        .value.reg = token_str,
+                    };
+                    utarray_push_back(loc_tokens, &new_symbol5);
+                    str_buffer_clear(current_token);
                 }
-                TextSymbol new_symbol4 = {
-                    .kind = TEXT_SYMBOL_REG,
-                    .value.reg = str_buffer_get_string(current_token),
-                };
-                utarray_push_back(loc_tokens, &new_symbol);
                 break;
             case ' ':
                 continue;
             default:
-                if (in_comment) {
-                    continue;
-                }
                 str_buffer_append_char(current_token, (char) ch);
                 break;
         }
     }
 
+    if (utarray_len(loc_tokens) > 0) {
+        utarray_push_back(fn_lines_array, &loc_tokens);
+    }
+
+    utarray_push_back(fn_array, &fn_lines_array);
+
     str_buffer_free(current_token);
-    free(fn_lines_array);
     free(loc_tokens);
 
     return fn_array;
@@ -536,6 +533,8 @@ TokenStream lexical_analysis(const char* obs_path) {
         return result;  // Return empty struct
     }
     printf("Global variables tokenized successfully.\n");
+
+    move_fptr_to_section_end(obs_file);
 
     printf("Tokenizing text section...\n");
     result.text_section = tokenize_text(obs_file);

@@ -21,7 +21,7 @@ get_handle() -> .hndl              ; ret window handle ptr
 
 ; Code section
 
-int main {
+.int main {
     msg* = .ptr msg*                     ; $ for global
     len* = .int $strlen msg*
     handle* = .hndl $get_handle
